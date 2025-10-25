@@ -1,6 +1,6 @@
 # Cross Origin Protection [![Latest Version on Packagist](https://img.shields.io/packagist/v/alexsoft/cross-origin-protection.svg?style=flat)](https://packagist.org/packages/alexsoft/cross-origin-protection)
 
-This library is a port of [CrossOriginProtection component][cross-origin-protection-component] in Go.
+This library is a port of [CrossOriginProtection component][cross-origin-protection-component] from Go.
 
 You can read an introduction to this component here: [alexedwards.net/blog/preventing-csrf-in-go][alexedwards-intro].
 
