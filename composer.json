@@ -25,6 +25,11 @@
             "Alexsoft\\CrossOriginProtection\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Alexsoft\\CrossOriginProtection\\Tests\\": "tests/"
+        }
+    },
     "config": {
         "allow-plugins": {
             "ergebnis/composer-normalize": true
@@ -32,5 +37,8 @@
         "platform": {
             "php": "8.1.0"
         }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit --testdox --colors=auto"
     }
 }
