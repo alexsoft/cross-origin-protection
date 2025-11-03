@@ -1,4 +1,4 @@
-name: PHPUnit Coverage
+name: PHPUnit Coverage (Codecov)
 
 on:
   - pull_request
@@ -33,9 +33,16 @@ jobs:
           dependency-versions: "${{ matrix.dependencies }}"
 
       - name: Run tests
-        run: composer test -- --coverage-clover coverage.xml
+        run: composer test -- --coverage-clover coverage.xml --log-junit junit.xml
 
-      - name: Upload coverage reports to Codecov
+      - name: Upload coverage report
+        if: ${{ !cancelled() }}
         uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
