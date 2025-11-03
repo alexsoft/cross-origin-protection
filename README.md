@@ -1,4 +1,4 @@
-# Cross Origin Protection [![Latest Version on Packagist](https://img.shields.io/packagist/v/alexsoft/cross-origin-protection.svg?style=flat)](https://packagist.org/packages/alexsoft/cross-origin-protection)
+# Cross Origin Protection [![Latest Version on Packagist](https://img.shields.io/packagist/v/alexsoft/cross-origin-protection.svg?style=flat)](https://packagist.org/packages/alexsoft/cross-origin-protection) [![codecov](https://codecov.io/github/alexsoft/cross-origin-protection/graph/badge.svg?token=GDLJ85NE1Q)](https://codecov.io/github/alexsoft/cross-origin-protection)
 
 This library is a port of [CrossOriginProtection component][cross-origin-protection-component] from Go.
 
