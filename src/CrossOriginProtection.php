@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Alexsoft\CrossOriginProtection;
 
 use Alexsoft\CrossOriginProtection\Exception\InvalidArgumentException;
+use GuzzleHttp\Psr7\Exception\MalformedUriException;
 use Http\Discovery\Psr17Factory;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriFactoryInterface;
@@ -41,7 +42,7 @@ final class CrossOriginProtection
             case 'none':
                 // it is safe, proceed with request
                 return null;
-            default:
+            default: // would handle same-site and cross-site cases
                 if ($this->isExempt($request)) {
                     return null;
                 }
@@ -59,10 +60,10 @@ final class CrossOriginProtection
 
         $originUri = $this->uriFactory->createUri($origin);
 
-        if ($originUri->getHost() === $request->getUri()->getHost()) {
+        if ($this->areHostAndPortSame($originUri, $request->getUri())) {
             // The Origin header matches the Host header. Note that the Host header
             // doesn't include the scheme, so we don't know if this might be an
-            // HTTP->HTTPS cross-origin request. Sites can mitigate
+            // HTTP->HTTPS cross-origin request. Sites should mitigate
             // this with HTTP Strict Transport Security (HSTS).
             return null;
         }
@@ -99,14 +100,20 @@ final class CrossOriginProtection
     public function addTrustedOrigin(string|UriInterface $uri): void
     {
         if (!($uri instanceof UriInterface)) {
-            $uri = $this->uriFactory->createUri($uri);
+            try {
+                $uri = $this->uriFactory->createUri($uri);
+            } catch (MalformedUriException $exception) {
+                throw new InvalidArgumentException("Invalid origin {$uri}: could not parse", previous: $exception);
+            }
         }
 
         if ($uri->getScheme() === '') {
+            $uri = trim((string)$uri, '/');
+
             throw new InvalidArgumentException("Invalid origin {$uri}: scheme is required");
         }
 
-        if ($uri->getHost() === '') {
+        if ($uri->getHost() === '') { // TODO recheck, this case is probably handled by catching MalformedUriException above
             throw new InvalidArgumentException("Invalid origin {$uri}: host is required");
         }
 
@@ -134,6 +141,22 @@ final class CrossOriginProtection
     public function getMiddleware(): CrossOriginProtectionMiddleware
     {
         return new CrossOriginProtectionMiddleware($this);
+    }
+
+    private function areHostAndPortSame(UriInterface $uri, UriInterface $otherUri): bool
+    {
+        return $this->getHostWithPort($uri) === $this->getHostWithPort($otherUri);
+    }
+
+    private function getHostWithPort(UriInterface $uri): string
+    {
+        $string = $uri->getHost();
+
+        if ($uri->getPort() !== null) {
+            $string .= ":{$uri->getPort()}";
+        }
+
+        return $string;
     }
 
     private function isExempt(ServerRequestInterface $request): bool
