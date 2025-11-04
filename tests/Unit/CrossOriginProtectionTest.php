@@ -162,6 +162,9 @@ final class CrossOriginProtectionTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{uri: string|UriInterface, expectedExceptionMessage: string}>
+     */
     public static function invalidTrustedOriginDataProvider(): iterable
     {
         $factory = new Psr17Factory();
