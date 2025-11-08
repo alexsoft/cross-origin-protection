@@ -87,6 +87,31 @@ final class CrossOriginProtectionTest extends TestCase
         $sut->addTrustedOrigin($uri);
     }
 
+    #[Test]
+    #[DataProvider('bypassByPatternRequestDataProvider')]
+    public function check_is_bypassed_by_pattern(ServerRequestInterface $request): void
+    {
+        $sut = $this->createSut();
+
+        $sut->addInsecureBypassPattern('\/internal\/');
+        $sut->addInsecureBypassPattern('safe');
+
+        $this->assertNull($sut->check($request));
+    }
+
+    #[Test]
+    #[DataProvider('bypassByTrustedOriginRequestDataProvider')]
+    public function check_is_bypassed_by_trusted_origin(ServerRequestInterface $request): void
+    {
+        $sut = $this->createSut();
+
+        $sut->addTrustedOrigin('https://example.com');
+        $sut->addTrustedOrigin('https://example.com:8080');
+        $sut->addTrustedOrigin('https://sub.example.com');
+
+        $this->assertNull($sut->check($request));
+    }
+
     /**
      * @return iterable<string, array{ServerRequestInterface}>
      */
@@ -210,6 +235,53 @@ final class CrossOriginProtectionTest extends TestCase
             'uri' => $factory->createUri('https://example.com:8080#fragment1'),
             'expectedExceptionMessage' => "Invalid origin https://example.com:8080#fragment1: path, query, and fragment are not allowed",
         ];
+    }
+
+    public static function bypassByPatternRequestDataProvider(): iterable
+    {
+        $factory = new Psr17Factory();
+
+        foreach (['same-site', 'cross-site'] as $secFetchSiteHeader) {
+            yield "{$secFetchSiteHeader}, /internal/ pattern" => [
+                $factory
+                    ->createServerRequest('POST', 'https://example.com/internal/123')
+                    ->withHeader('Sec-Fetch-Site', $secFetchSiteHeader),
+            ];
+
+            yield "{$secFetchSiteHeader}, safe pattern" => [
+                $factory
+                    ->createServerRequest('POST', 'https://example.com/12safe34/download')
+                    ->withHeader('Sec-Fetch-Site', $secFetchSiteHeader),
+            ];
+        }
+    }
+
+    public static function bypassByTrustedOriginRequestDataProvider(): iterable
+    {
+        $factory = new Psr17Factory();
+
+        foreach (['same-site', 'cross-site'] as $secFetchSiteHeader) {
+            yield "{$secFetchSiteHeader}, example.com origin" => [
+                $factory
+                    ->createServerRequest('POST', 'https://example.com/download')
+                    ->withHeader('Sec-Fetch-Site', $secFetchSiteHeader)
+                    ->withHeader('Origin', 'https://example.com'),
+            ];
+
+            yield "{$secFetchSiteHeader}, example.com:8080 origin" => [
+                $factory
+                    ->createServerRequest('POST', 'https://example.com:8080/download')
+                    ->withHeader('Sec-Fetch-Site', $secFetchSiteHeader)
+                    ->withHeader('Origin', 'https://example.com:8080'),
+            ];
+
+            yield "{$secFetchSiteHeader}, sub.example.com origin" => [
+                $factory
+                    ->createServerRequest('POST', 'https://example.com/download')
+                    ->withHeader('Sec-Fetch-Site', $secFetchSiteHeader)
+                    ->withHeader('Origin', 'https://sub.example.com'),
+            ];
+        }
     }
 
     private function createSut(): CrossOriginProtection
