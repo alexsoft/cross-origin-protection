@@ -237,6 +237,9 @@ final class CrossOriginProtectionTest extends TestCase
         ];
     }
 
+    /**
+     * @return iterable<string, array{ServerRequestInterface}>
+     */
     public static function bypassByPatternRequestDataProvider(): iterable
     {
         $factory = new Psr17Factory();
@@ -256,6 +259,9 @@ final class CrossOriginProtectionTest extends TestCase
         }
     }
 
+    /**
+     * @return iterable<string, array{ServerRequestInterface}>
+     */
     public static function bypassByTrustedOriginRequestDataProvider(): iterable
     {
         $factory = new Psr17Factory();
