@@ -3,6 +3,11 @@
     "description": "Cross Origin Protection middleware that uses Sec-Fetch-Site and Origin headers",
     "license": "MIT",
     "type": "library",
+    "keywords": [
+        "cross-origin",
+        "protection",
+        "middleware"
+    ],
     "authors": [
         {
             "name": "Oleksii Plekhanov",
@@ -21,9 +26,12 @@
     "require-dev": {
         "ergebnis/composer-normalize": "^2.48.2",
         "guzzlehttp/psr7": "^2.8",
-        "phpstan/phpstan": "^2.1.31",
+        "phpstan/phpstan": "^2.1.32",
         "phpstan/phpstan-strict-rules": "^2.0.7",
         "phpunit/phpunit": "^10.5.58"
+    },
+    "provide": {
+        "psr/http-server-middleware-implementation": "1.0"
     },
     "minimum-stability": "stable",
     "autoload": {
