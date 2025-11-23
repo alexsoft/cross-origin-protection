@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Alexsoft\CrossOriginProtection;
 
 use Alexsoft\CrossOriginProtection\Exception\InvalidArgumentException;
-use GuzzleHttp\Psr7\Exception\MalformedUriException;
 use Http\Discovery\Psr17Factory;
+use InvalidArgumentException as BaseInvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
@@ -102,7 +102,7 @@ final class CrossOriginProtection
         if (!($uri instanceof UriInterface)) {
             try {
                 $uri = $this->uriFactory->createUri($uri);
-            } catch (MalformedUriException $exception) {
+            } catch (BaseInvalidArgumentException $exception) {
                 throw new InvalidArgumentException("Invalid origin {$uri}: could not parse", previous: $exception);
             }
         }
