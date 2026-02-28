@@ -21,17 +21,17 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # 6.0.2
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@44454db4f0199b8b9685a5d763dc37cbf79108e1 # 2.36.0
         with:
           php-version: ${{ matrix.php }}
           tools: composer:v2
           coverage: pcov
 
       - name: Composer install
-        uses: ramsey/composer-install@v3
+        uses: ramsey/composer-install@3cf229dc2919194e9e36783941438d17239e8520 # 3.1.1
         with:
           dependency-versions: "${{ matrix.dependencies }}"
 
@@ -40,12 +40,12 @@ jobs:
 
       - name: Upload coverage report
         if: ${{ !cancelled() }}
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@671740ac38dd9b0130fbe1cec585b89eea48d3de # 5.5.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/test-results-action@0fa95f0e1eeaafde2c782583b36b28ad0d8c77d3 # 1.2.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
