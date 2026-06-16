@@ -24,9 +24,9 @@
         "psr/http-server-middleware": "^1.0"
     },
     "require-dev": {
-        "ergebnis/composer-normalize": "^2.51.0",
-        "guzzlehttp/psr7": "^2.9",
-        "phpstan/phpstan": "^2.1.54",
+        "ergebnis/composer-normalize": "^2.52.0",
+        "guzzlehttp/psr7": "^2.11.1",
+        "phpstan/phpstan": "^2.2.2",
         "phpstan/phpstan-strict-rules": "^2.0.11",
         "phpunit/phpunit": "^10.5.63"
     },
